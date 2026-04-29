@@ -29,10 +29,6 @@
 
 ![Live Predictor](05_live_prediction_interface.png)
 
-🔗 **Live Application:** [View Live Predictor](https://ais-pre-4heqbivnlmytgye44jfeqn-50948685477.asia-southeast1.run.app)  
-🔗 **API Documentation:** [Swagger UI Interface](https://ais-pre-4heqbivnlmytgye44jfeqn-50948685477.asia-southeast1.run.app/docs)  
-*(Note: Use `/api/predict` for programmatic access)*
-
 ---
 
 ## 📊 Exploratory Data Analysis
