@@ -147,4 +147,4 @@ npm run dev
 ## 👤 Author
 **Ayan Hubli**  
 📧 hubliayan@gmail.com  
-🔗 [LinkedIn](www.linkedin.com/in/ayan-hubli-794353282) | [GitHub](https://github.com/hubliayan-dotcom)
+🔗 [LinkedIn](www.linkedin.com/in/ayan-hubli) | [GitHub](https://github.com/hubliayan-dotcom)
