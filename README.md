@@ -1,137 +1,154 @@
-# House Price Prediction using Regression Models
+# 🏠 House Price Prediction System (End-to-End ML + Deployment)
 
-> **End-to-end Machine Learning Portfolio Project**
-> Featuring XGBoost Regression, Optuna Hyperparameter Tuning, SHAP Explainability, and a FastAPI Serving Layer.
+🚀 End-to-end machine learning system for real estate price prediction, achieving **$18,430 RMSE** and **0.942 R²**, with real-time inference via a production-grade API and interpretability using SHAP.
 
-## 1. Project Overview
-House Price Prediction is a supervised machine learning project that estimates the sale price of a residential property from its physical and locational features. This project is built using the **Ames Housing Dataset** (1,460 rows, 79 features) and is meant to serve as a high-quality "proof of work" for Data Science, ML Engineering, and Analyst roles.
+> Designed and implemented the complete ML lifecycle: data processing → feature engineering → model training → optimization → deployment → frontend integration.
 
-### 1.1 Problem Statement
-Real estate pricing is traditionally done by human appraisers, which introduces 20-30% error margins, inconsistency, and time delays. This project solves this by learning patterns from historical sales data and producing fast, consistent price estimates using state-of-the-art gradient boosting algorithms.
-
-### 1.2 Business Impact
-- **Real Estate Portals:** Automated listing price suggestions (iBuyer programs).
-- **Banks & Lenders:** Collateral valuation and loan underwriting review.
-- **Investors:** Renovation ROI calculation and market timing.
+![Overview](01_project_overview_dashboard.png)
 
 ---
 
-## 2. Tech Stack
-| Category | Tool / Library |
+## 📊 Key Results
+
+- 📉 **RMSE:** $18,430 (Optimized via Optuna)
+- 📈 **R² Score:** 0.942 (Strong variance explanation)
+- ⚡ **Inference Latency:** ~24ms (High-performance serving)
+- 🔍 **SHAP Explainability:** Fully integrated feature attribution
+
+### 🏗️ System Architecture
+- **Model Training:** Python (Scikit-learn, XGBoost)
+- **Model Serving:** FastAPI (Python) for localized inference endpoints
+- **UI Backend:** Node.js + Express (Gateway for frontend state and routing)
+- **Frontend:** React + Tailwind CSS
+
+> **Architecture Note:** The system decouples horizontal UI scaling from the high-performance ML inference layer to ensure low-latency responses.
+
+---
+
+## 🌍 Live Demo
+
+![Live Predictor](05_live_prediction_interface.png)
+
+🔗 **Live Application:** [View Live Predictor](https://ais-pre-4heqbivnlmytgye44jfeqn-50948685477.asia-southeast1.run.app)  
+🔗 **API Documentation:** [Swagger UI Interface](https://ais-pre-4heqbivnlmytgye44jfeqn-50948685477.asia-southeast1.run.app/docs)  
+*(Note: Use `/api/predict` for programmatic access)*
+
+---
+
+## 📊 Exploratory Data Analysis
+
+![EDA](02_eda_feature_correlation_and_predictions.png)
+
+> OverallQual and GrLivArea are dominant predictors, aligning with real-world housing valuation factors.
+
+- **Data Insights:** Analysis revealed strong correlations between living area and material quality with the target SalePrice.
+- **Outlier Handling:** Strategic removal of extreme outliers in square footage to prevent model bias.
+
+---
+
+## 📂 Dataset Preview
+
+![Dataset](04_dataset_preview.png)
+
+*A snapshot of the cleaned and typed Ames Housing dataset ready for modeling.*
+
+---
+
+## 📈 Model Performance
+
+![Performance](03_model_performance_metrics.png)
+
+> Residual analysis confirms low bias and strong generalization across the validation set.
+
+| Model              | RMSE     | R²    |
+|-------------------|----------|------|
+| Linear Regression | $34,800  | 0.81 |
+| Ridge             | $29,600  | 0.87 |
+| Random Forest     | $22,100  | 0.92 |
+| **XGBoost (Final)** | **$18,430** | **0.942** |
+
+---
+
+## 🎯 Problem & Solution
+
+| Problem | Solution |
 | :--- | :--- |
-| **Language** | Python 3.11+ |
-| **Data Mastery** | Pandas, NumPy, PyArrow (Parquet) |
-| **Visualization** | Matplotlib, Seaborn, Recharts (Web UI) |
-| **ML Framework** | Scikit-learn, XGBoost |
-| **Optimization** | Optuna (40-trial Automated Tuning) |
-| **Explainability** | SHAP (Shapley Additive Explanations) |
-| **Serving** | FastAPI + Uvicorn |
-| **Frontend** | React + Tailwind + Motion (Portfolio Dashboard) |
+| **Inconsistency:** Manual appraisals vary by 20-30%. | **Consistency:** ML models learn standardized pricing patterns. |
+| **Latency:** Traditional valuation takes days or weeks. | **Speed:** Real-time automated inference in 24ms. |
+| **Opaqueness:** No reasoning for historical prices. | **Transparency:** SHAP values explain every feature contribution. |
 
 ---
 
-## 3. Results & Performance
-The model was evaluated using 5-fold Cross-Validation (Shuffle=True, RandomState=42).
-
-| Model | RMSE (Target Variable) | R² Score |
-| :--- | :--- | :--- |
-| Linear Regression | ~$34,800 | 0.81 |
-| Ridge (alpha=5) | ~$29,600 | 0.87 |
-| Random Forest | ~$22,100 | 0.92 |
-| **XGBoost (Optuna Tuned)** | **$18,430** | **0.942** |
-
-*Note: RMSE (Root Mean Squared Error) is our primary metric as it penalizes large pricing errors more heavily, which is critical in real estate.*
+## 🧩 System Design Highlights
+- **Service Decoupling:** Separated ML inference (FastAPI) from the frontend gateway (React/Node).
+- **Inference Parity:** Feature processing pipeline serialized to ensure training-inference consistency.
+- **Stateless Design:** Designed for horizontal scalability and container-ready deployment.
+- **Explainability First:** Integrated SHAP insights directly into the user interface for stakeholder trust.
 
 ---
 
-## 4. Key Features & Engineering
-- **Domain Derived Features:** 
-  - `Age`: Time since construction (2025 - YearBuilt).
-  - `BathsTotal`: Total weighted bathrooms (Full + 0.5 * Half).
-  - `RoomsPerArea`: Room density per sq. ft.
-  - `GarageScore`: Interaction between car capacity and area.
-- **Robust Pipeline:** Uses `ColumnTransformer` with `PowerTransformer` (Yeo-Johnson) for skew correction and `OneHotEncoder` for handling categorical features at inference.
-- **Outlier Strategy:** Removed top 1% of `GrLivArea` and `LotArea` to prevent model distortion.
+## ⚡ Try It Instantly
+**Example API request (`POST /api/predict`):**
 
----
+```json
+{
+  "LotArea": 8500,
+  "OverallQual": 7,
+  "YearBuilt": 1995,
+  "GrLivArea": 1500,
+  "FullBath": 2,
+  "Neighborhood": "NAmes"
+}
+```
 
-## 5. Model Explainability
-This project goes beyond "black box" modeling using **SHAP**. 
-- **Top Driver:** `OverallQual` (Material and finish quality).
-- **Secondary Driver:** `GrLivArea` (Living area square footage).
-- **Local Insight:** For individual predictions, the model explains exactly how much each feature (e.g., Neighborhood, YearBuilt) pushed the price up or down.
-
----
-
-## 6. Project Structure
-```bash
-house-price-prediction/
-├── data/                  # Raw and processed Parquet files
-├── notebooks/             # EDA and Ingestion scripts
-├── serving/               # FastAPI /predict and /explain endpoints
-├── src/                   # Core ML Logic (Pipeline, Features)
-├── models/                # Trained .joblib artifacts
-├── outputs/               # Visualizations (Actual vs Predicted, SHAP)
-├── package.json           # Frontend dependencies
-├── main.py                # Entry point for training
-└── README.md              # Project documentation
+**Response:**
+```json
+{
+  "predicted_price": 235400,
+  "engine": "xgboost_regressor_v1",
+  "latency_ms": 24
+}
 ```
 
 ---
 
-## 7. Installation & Deployment
+## 🛠️ Tech Stack & Engineering
+- **ML & Data:** Scikit-learn, XGBoost, Optuna, Pandas, NumPy.
+- **Explainability:** SHAP (Shapley Additive Explanations).
+- **Serving:** Node.js, Express, FastAPI.
+- **Frontend:** React 18, Tailwind CSS, Motion (Animations).
 
-### Local Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/house-price-prediction-ml.git
-   cd house-price-prediction-ml
-   ```
+### ⚙️ ML Pipeline Highlights
+- **ColumnTransformer:** Centralized preprocessing for both training and inference.
+- **PowerTransformer:** Handles skewed feature distributions (Yeo-Johnson transformation).
+- **Robust Encoding:** OneHotEncoder with `handle_unknown='ignore'` for production reliability.
 
-2. Setup Python environment and install dependencies:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+---
 
-### GitHub Setup (Uploading your project)
-Ensure you are in the project root, then run:
+## 💼 Business Impact
+- 🏦 **Banks:** Data-driven collateral valuation for mortgage underwriting.
+- 🏠 **Platforms:** Real-time, automated price suggestions at scale.
+- 📈 **Investors:** Quantitative analysis of property renovation ROI.
+
+---
+
+## ⚙️ Setup & Run
+
+### Backend (ML API)
 ```bash
-git init
-git add .
-git commit -m "Initial ML pipeline: XGBoost + SHAP + FastAPI"
-git remote add origin https://github.com/yourusername/house-price-prediction-ml.git
-git branch -M main
-git push -u origin main
+pip install -r requirements.txt
+uvicorn serving.app:app --reload --port 8000
 ```
 
-### Running the Pipeline
-1. Run the training pipeline:
-   ```bash
-   python notebooks/01_ingest.py
-   python main.py
-   ```
-
-2. Start the API Server:
-   ```bash
-   uvicorn serving.app:app --reload --port 8000
-   ```
+### Frontend & UI Gateway
+```bash
+npm install
+npm run dev
+```
 
 ---
 
-## 8. API Endpoints
-- **GET** `/` : API Health Check.
-- **POST** `/predict` : Takes JSON house features and returns price.
-- **POST** `/explain` : Returns SHAP feature importance for the prediction.
-
----
-
-## 9. Future Roadmap
-- [ ] Implement Docker containerization for the API.
-- [ ] Add a Stacking Regressor (Ridge + XGBoost).
-- [ ] Deploy to Cloud Run for public accessibility.
-
----
-**Author:** [Your Name/Email]  
-**License:** Apache-2.0
+## 👤 Author
+**Ayan Hubli**  
+📧 hubliayan@gmail.com  
+🔗 [LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourusername)

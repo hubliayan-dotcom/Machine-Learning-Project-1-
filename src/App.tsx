@@ -158,18 +158,21 @@ const Predictor = () => {
   const [prediction, setPrediction] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handlePredict = () => {
+  const handlePredict = async () => {
     setLoading(true);
-    // Simulated prediction logic based on Ames regressions
-    setTimeout(() => {
-      const base = 50000;
-      const qualFactor = inputs.OverallQual * 25000;
-      const areaFactor = inputs.GrLivArea * 85;
-      const ageFactor = (2025 - inputs.YearBuilt) * -500;
-      const price = base + qualFactor + areaFactor + ageFactor;
-      setPrediction(price);
+    try {
+      const response = await fetch('/api/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inputs)
+      });
+      const data = await response.json();
+      setPrediction(data.predicted_price);
+    } catch (error) {
+      console.error("Prediction failed:", error);
+    } finally {
       setLoading(false);
-    }, 1200);
+    }
   };
 
   return (
