@@ -1,0 +1,6 @@
+{
+  "name": "Ames House Price Predictor",
+  "description": "An end-to-end Machine Learning portfolio project featuring XGBoost regression, Optuna tuning, SHAP explainability, and a FastAPI serving layer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
