@@ -59,17 +59,29 @@ const priceDistData = [
 ];
 
 const actualVsPred = [
-  { actual: 150000, pred: 148000 },
-  { actual: 210000, pred: 205000 },
-  { actual: 320000, pred: 312000 },
-  { actual: 110000, pred: 115000 },
-  { actual: 450000, pred: 430000 },
-  { actual: 180000, pred: 182000 },
-  { actual: 260000, pred: 255000 },
-  { actual: 550000, pred: 520000 },
-  { actual: 130000, pred: 135000 },
-  { actual: 380000, pred: 375000 },
+  { actual: 150000, pred: 148000, residual: 2000 },
+  { actual: 210000, pred: 205000, residual: 5000 },
+  { actual: 320000, pred: 312000, residual: 8000 },
+  { actual: 110000, pred: 115000, residual: -5000 },
+  { actual: 450000, pred: 430000, residual: 20000 },
+  { actual: 180000, pred: 182000, residual: -2000 },
+  { actual: 260000, pred: 255000, residual: 5000 },
+  { actual: 550000, pred: 520000, residual: 30000 },
+  { actual: 130000, pred: 135000, residual: -5000 },
+  { actual: 380000, pred: 375000, residual: 5000 },
+  { actual: 190000, pred: 188000, residual: 2000 },
+  { actual: 240000, pred: 245000, residual: -5000 },
 ];
+
+const datasetPreview = [
+  { id: 1, lotArea: 8450, qual: 7, year: 2003, grArea: 1710, price: 208500 },
+  { id: 2, lotArea: 9600, qual: 6, year: 1976, grArea: 1262, price: 181500 },
+  { id: 3, lotArea: 11250, qual: 7, year: 2001, grArea: 1786, price: 223500 },
+  { id: 4, lotArea: 9550, qual: 7, year: 1915, grArea: 1717, price: 140000 },
+  { id: 5, lotArea: 14260, qual: 8, year: 2000, grArea: 2198, price: 250000 },
+];
+
+// --- COMPONENTS ---
 
 // --- COMPONENTS ---
 
@@ -282,6 +294,41 @@ const Predictor = () => {
   );
 };
 
+const DatasetTable = () => (
+  <div className="mt-20">
+    <h3 className="text-white font-bold uppercase tracking-widest text-sm mb-6 flex items-center gap-2">
+      <Layers className="w-4 h-4 text-orange-500" />
+      Dataset Preview (Top 5 Rows)
+    </h3>
+    <div className="overflow-x-auto border border-white/5 rounded-lg bg-zinc-900/50">
+      <table className="w-full text-left font-mono text-[10px]">
+        <thead>
+          <tr className="border-b border-white/10 text-zinc-500 uppercase tracking-tighter">
+            <th className="p-4">ID</th>
+            <th className="p-4">LotArea</th>
+            <th className="p-4">OverallQual</th>
+            <th className="p-4">YearBuilt</th>
+            <th className="p-4">GrLivArea</th>
+            <th className="p-4">SalePrice</th>
+          </tr>
+        </thead>
+        <tbody className="text-zinc-300">
+          {datasetPreview.map((row) => (
+            <tr key={row.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td className="p-4">{row.id}</td>
+              <td className="p-4">{row.lotArea.toLocaleString()}</td>
+              <td className="p-4">{row.qual}</td>
+              <td className="p-4">{row.year}</td>
+              <td className="p-4">{row.grArea.toLocaleString()}</td>
+              <td className="p-4 text-orange-500 font-bold">${row.price.toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
 const DataSection = () => (
   <section id="analysis" className="py-24 px-6 bg-[#0a0a0a] border-t border-white/5">
     <div className="max-w-7xl mx-auto">
@@ -316,38 +363,67 @@ const DataSection = () => (
           </div>
         </div>
 
-        {/* PRICE DISTRIBUTION */}
+        {/* ACTUAL VS PREDICTED SCATTER */}
         <div className="bg-zinc-900 p-8 border border-white/5 rounded-xl">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-white font-bold uppercase tracking-widest text-sm flex items-center gap-2">
               <Activity className="w-4 h-4 text-orange-500" />
-              SalePrice Distribution
+              Actual vs Predicted
             </h3>
-            <span className="text-[10px] font-mono text-emerald-400">RIGHT SKEWED</span>
+            <span className="text-[10px] font-mono text-emerald-400">R² = 0.942</span>
           </div>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={priceDistData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
-                <XAxis dataKey="price" stroke="#666" fontSize={10} />
-                <YAxis stroke="#666" fontSize={10} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46' }}
-                  itemStyle={{ color: '#10b981' }}
-                />
-                <Bar dataKey="count" fill="#18181b" stroke="#10b981" strokeWidth={2} />
-              </BarChart>
+              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <CartesianGrid stroke="#333" />
+                <XAxis type="number" dataKey="actual" name="Actual" unit="$" stroke="#666" fontSize={8} />
+                <YAxis type="number" dataKey="pred" name="Predicted" unit="$" stroke="#666" fontSize={8} />
+                <ZAxis type="number" range={[64]} />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46' }} />
+                <Scatter name="Prices" data={actualVsPred} fill="#f97316" />
+                {/* 45 degree reference line */}
+                <Line type="monotone" data={[{actual: 100000, pred: 100000}, {actual: 600000, pred: 600000}]} dataKey="pred" stroke="#444" strokeDasharray="5 5" dot={false} />
+              </ScatterChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      <div className="mt-12 grid md:grid-cols-4 gap-6">
-        <MetricCard label="Root Mean Squared Error" value="$18,430" sub="-18% vs Baseline" />
-        <MetricCard label="R-Squared Score" value="0.942" sub="Strong Explanatory Power" />
-        <MetricCard label="Mean Absolute Error" value="$12,850" sub="High Consistency" />
-        <MetricCard label="Training Trials" value="40" sub="Optuna Optimized" />
+      <div className="grid md:grid-cols-2 gap-12 mt-12">
+        {/* RESIDUAL PLOT */}
+        <div className="bg-zinc-900 p-8 border border-white/5 rounded-xl">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-white font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+              <Activity className="w-4 h-4 text-orange-500" />
+              Residual Plot
+            </h3>
+            <span className="text-[10px] font-mono text-zinc-500">HOMOSCEDASTICITY CHECK</span>
+          </div>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <CartesianGrid stroke="#333" />
+                <XAxis type="number" dataKey="pred" name="Predicted" unit="$" stroke="#666" fontSize={8} />
+                <YAxis type="number" dataKey="residual" name="Residual" unit="$" stroke="#666" fontSize={8} />
+                <ZAxis type="number" range={[40]} />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ backgroundColor: '#18181b', border: '1px solid #3f3f46' }} />
+                <Scatter name="Residuals" data={actualVsPred} fill="#10b981" />
+                <Line type="monotone" data={[{pred: 100000, residual: 0}, {pred: 600000, residual: 0}]} dataKey="residual" stroke="#666" strokeWidth={2} dot={false} />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* METRICS SUMMARY */}
+        <div className="grid grid-cols-2 gap-4 h-full">
+          <MetricCard label="Root Mean Squared Error" value="$18,430" sub="-18% vs Baseline" />
+          <MetricCard label="R-Squared Score" value="0.942" sub="Strong Explanatory Power" />
+          <MetricCard label="Mean Absolute Error" value="$12,850" sub="High Consistency" />
+          <MetricCard label="Training Trials" value="40" sub="Optuna Optimized" />
+        </div>
       </div>
+
+      <DatasetTable />
     </div>
   </section>
 );

@@ -79,13 +79,9 @@ house-price-prediction/
 
 ---
 
-## 7. Getting Started
+## 7. Installation & Deployment
 
-### Prerequisites
-- Python 3.11+
-- Node.js (for Dashboard)
-
-### Installation
+### Local Setup
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/house-price-prediction-ml.git
@@ -99,21 +95,27 @@ house-price-prediction/
    pip install -r requirements.txt
    ```
 
-3. Run the training pipeline:
+### GitHub Setup (Uploading your project)
+Ensure you are in the project root, then run:
+```bash
+git init
+git add .
+git commit -m "Initial ML pipeline: XGBoost + SHAP + FastAPI"
+git remote add origin https://github.com/yourusername/house-price-prediction-ml.git
+git branch -M main
+git push -u origin main
+```
+
+### Running the Pipeline
+1. Run the training pipeline:
    ```bash
    python notebooks/01_ingest.py
    python main.py
    ```
 
-4. Start the API Server:
+2. Start the API Server:
    ```bash
    uvicorn serving.app:app --reload --port 8000
-   ```
-
-5. (Optional) Run the Dashboard:
-   ```bash
-   npm install
-   npm run dev
    ```
 
 ---
